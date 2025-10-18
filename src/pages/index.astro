@@ -1,53 +1,73 @@
 ---
 // Components
 import Layout from '../layouts/Layout.astro';
-import Skeleton from '../components/ui/Skeleton.astro';
-
 import { Image } from 'astro:assets';
-
 import logo from '../assets/logo.webp';
-
-// Tabla
-// https://docs.google.com/spreadsheets/d/e/2PACX-1vSDltLEid06nepxJE3_0v7McOqSbhOqkrSJKd5KWBzGWB2DHWouTS1bE5TCSjREZ8xJHAIn_lMhMrwh/pub?gid=1418425775&single=true&output=csv
-// Columnas: Nombre, Jugados, Ganados, Empatados, Perdidos, Puntos, Estado
-
-// Fechas
-// https://docs.google.com/spreadsheets/d/e/2PACX-1vSDltLEid06nepxJE3_0v7McOqSbhOqkrSJKd5KWBzGWB2DHWouTS1bE5TCSjREZ8xJHAIn_lMhMrwh/pub?gid=546953721&single=true&output=csv
-// Columnas:
-// Jugador 1 Equipo 1, Jugador 2 Equipo 1, Jugador 3 Equipo 1, Jugador 4 Equipo 1, Jugador 5 Equipo 1,
-// Jugador 1 Equipo 2, Jugador 2 Equipo 2, Jugador 3 Equipo 2, Jugador 4 Equipo 2, Jugador 5 Equipo 2, Fecha, Ganador (E1-E2-Empate), Fecha Numero
 ---
 
-<Layout title="Mostros Gamer Tabla" description="" lang="es">
-  <section class="relative flex min-h-dvh items-start justify-center overflow-hidden pt-20">
-    <div class="absolute inset-0">
-      <div class="absolute inset-0 bg-black/60"></div>
-    </div>
-
-    <div class="relative z-10 container mx-auto px-4 text-center text-white">
-      <div class="mx-auto max-w-6xl">
-        <div class="mb-8">
-          <div class="mx-auto mb-6 flex w-1/2 items-center justify-center gap-2">
-            <!-- Full Rounded Mostros Gaming Logo: Placeholder for now -->
-            <Image src={logo} alt="Cordoba" class="mx-auto mb-2 h-6 w-auto md:h-12" />
+<Layout title="Torneo Oficial Viernes de Gordos" description="Torneo oficial viernes de gordos sponsoreado por Mostros Gaming" lang="es">
+  <section
+    class="relative flex min-h-dvh items-start justify-center overflow-hidden bg-gradient-to-br from-gray-800 via-gray-900 to-black pt-20 pb-20"
+  >
+    <div class="relative z-10 container mx-auto px-4 text-white">
+      <div class="mx-auto max-w-7xl">
+        <!-- Header with Logo -->
+        <div class="mb-8 text-center">
+          <div class="mx-auto mb-6 flex items-center justify-center">
+            <div
+              class="relative h-32 w-32 rounded-full border-4 border-[#3FA6E8] bg-gradient-to-br from-gray-800 to-gray-900 p-3 shadow-xl shadow-[#3FA6E8]/20 md:h-40 md:w-40"
+            >
+              <Image src={logo} alt="Mostros Gaming Logo" class="h-full w-full object-contain" />
+            </div>
           </div>
+          <h1 class="mb-2 text-2xl font-bold md:text-4xl">
+            <span class="bg-gradient-to-r from-[#3FA6E8] via-[#F5C255] to-[#39DE42] bg-clip-text text-transparent"
+              >Torneo Oficial Viernes de Gordos</span
+            >
+          </h1>
+          <h2 class="text-base font-semibold text-[#F5C255] md:text-xl">Sponsoreado por Mostros Gaming</h2>
         </div>
 
-        <div class="container mx-auto px-4">
-          <div class="mb-10 text-center">
-            <h2 class="mb-6 text-4xl font-bold text-white md:text-5xl">
-              <span class="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">Tabla</span>
-            </h2>
+        <!-- Loading state -->
+        <div id="loading" class="text-center">
+          <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#3FA6E8] border-r-transparent"></div>
+          <p class="mt-2 text-[#F5C255]">Cargando datos...</p>
+        </div>
+
+        <!-- Hidden by default, shown after data loads -->
+        <div id="content" class="hidden space-y-8">
+          <!-- Standings Table -->
+          <div class="flex justify-center">
+            <div class="overflow-hidden rounded-lg border-2 border-[#3FA6E8] bg-gray-900/80 shadow-xl shadow-[#3FA6E8]/10">
+              <div class="overflow-x-auto">
+                <table class="text-sm">
+                  <thead>
+                    <tr class="border-b-2 border-[#3FA6E8] bg-gradient-to-r from-[#3FA6E8] to-[#3FA6E8]/80">
+                      <th class="px-6 py-3 text-left font-bold text-white">Jugador</th>
+                      <th class="px-4 py-3 text-center font-bold text-white">PTS</th>
+                      <th class="px-4 py-3 text-center font-bold text-white">PJ</th>
+                      <th class="px-4 py-3 text-center font-bold text-white">PG</th>
+                      <th class="px-4 py-3 text-center font-bold text-white">PE</th>
+                      <th class="px-4 py-3 text-center font-bold text-white">PP</th>
+                      <th class="px-6 py-3 text-left font-bold text-white">Estado</th>
+                    </tr>
+                  </thead>
+                  <tbody id="playerStatsBody">
+                    <!-- Populated by JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
 
-          <div class="mx-auto max-w-4xl">
-            <!-- Loading state -->
-            <div id="tour-loading">
-              <Skeleton />
+          <!-- Match History -->
+          <div class="space-y-6">
+            <h2 class="bg-gradient-to-r from-[#3FA6E8] to-[#39DE42] bg-clip-text text-center text-2xl font-bold text-transparent md:text-3xl">
+              Historial de Partidos
+            </h2>
+            <div id="matchHistory" class="space-y-4">
+              <!-- Populated by JavaScript -->
             </div>
-
-            <!-- Dynamic tour dates container -->
-            <div id="tour-dates-container"></div>
           </div>
         </div>
       </div>
@@ -55,146 +75,175 @@ import logo from '../assets/logo.webp';
   </section>
 
   <script>
-    // Mobile menu functionality
-    document.addEventListener('DOMContentLoaded', () => {
-      // Date formatting utilities
-      const formatDate = (dateStr: string) => {
-        // Parse DD/MM/YY format (e.g., "23/05/25")
-        const [day, month, year] = dateStr.split('/');
-        const fullYear = 2000 + parseInt(year);
-        const date = new Date(fullYear, parseInt(month) - 1, parseInt(day));
-
-        return {
-          dayNum: day.padStart(2, '0'),
-          monthAbbr: getMonthAbbr(parseInt(month) - 1),
-          dayOfWeek: getDayAbbr(date.getDay()),
-          fullDate: formatFullDate(date),
-          dateObj: date,
-        };
-      };
-
-      const getMonthAbbr = (monthIndex: number): string => {
-        const months = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
-        return months[monthIndex];
-      };
-
-      const getDayAbbr = (dayIndex: number): string => {
-        const days = ['DOM', 'LUN', 'MAR', 'MIE', 'JUE', 'VIE', 'SAB'];
-        return days[dayIndex];
-      };
-
-      const formatFullDate = (date: Date): string => {
-        const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-        return `${date.getDate()} de ${months[date.getMonth()]}, ${date.getFullYear()}`;
-      };
-
-      const isDateInPast = (dateObj: Date): boolean => {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        return dateObj.getTime() < today.getTime();
-      };
-
-      const createTourCard = (tour: any): string => {
-        const status = isDateInPast(tour.dateObj) ? 'Finalizado' : 'Proximamente';
-        const badgeClass = status === 'Proximamente' ? 'bg-green-600' : 'bg-gray-600';
-
-        return `
-        <div class="mx-auto mb-4 max-w-xl rounded-lg border border-gray-700/50 bg-gray-800/50 transition-all duration-300 hover:bg-gray-800/70">
-          <div class="flex items-start flex-row">
-            <!-- Date Box -->
-            <div class="flex min-w-[100px] flex-col items-center justify-center rounded-tl-lg rounded-tr-lg bg-gray-100 p-4 text-center text-gray-900 md:rounded-l-lg md:rounded-tr-none md:p-6">
-              <div class="text-sm font-medium text-gray-500">${tour.monthAbbr}</div>
-              <div class="text-3xl font-bold">${tour.dayNum}</div>
-              <div class="text-sm text-gray-500">${tour.dayOfWeek}</div>
-            </div>
-
-            <!-- Event Details -->
-            <div class="w-full p-2 md:p-4">
-              <div class="mb-2 flex items-start justify-between">
-                <h3 class="text-xl font-bold text-white">${tour.city}</h3>
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${badgeClass} text-white">
-                  ${status}
-                </span>
-              </div>
-
-              <div class="space-y-3 text-gray-300">
-                <div class="flex items-center space-x-2">
-                  <svg class="h-4 w-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span class="text-sm">${tour.fullDate}</span>
-                </div>
-                <div class="flex items-center space-x-2">
-                  <svg class="h-4 w-4 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  <span class="text-sm">${tour.location}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      };
-
-      // Fetch CSV from Google Sheets and create tour cards
-      const tourLoadingElement = document.getElementById('tour-loading');
-      const tourContainer = document.getElementById('tour-dates-container');
-
-      fetch('')
-        .then((response) => response.text())
-        .then((text) => {
-          const lines = text.trim().split('\n');
-          // Skip the header row (Fecha,Establecimiento,Ciudad)
-          const rows = lines.slice(1);
-
-          const tours = rows.map((line) => {
-            const [fecha, establecimiento, ciudad] = line.split(',');
-            const dateInfo = formatDate(fecha.trim());
-
-            return {
-              ...dateInfo,
-              location: establecimiento.trim(),
-              city: ciudad.trim(),
-            };
-          });
-
-          // Sort tours by date
-          tours.sort((a: any, b: any) => a.dateObj.getTime() - b.dateObj.getTime());
-
-          // Hide loading and show tours
-          if (tourLoadingElement) {
-            tourLoadingElement.style.display = 'none';
-          }
-
-          if (tourContainer) {
-            tourContainer.innerHTML = tours.map(createTourCard).join('');
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-          if (tourLoadingElement) {
-            tourLoadingElement.innerHTML = '<div class="text-red-400">Error cargando las fechas. Intenta nuevamente.</div>';
-          }
+    async function loadData() {
+      try {
+        // Fetch player stats
+        const statsResponse = await fetch(
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vSDltLEid06nepxJE3_0v7McOqSbhOqkrSJKd5KWBzGWB2DHWouTS1bE5TCSjREZ8xJHAIn_lMhMrwh/pub?gid=1418425775&single=true&output=csv',
+        );
+        const statsText = await statsResponse.text();
+        const statsLines = statsText.trim().split('\n');
+        const playerStats = statsLines.slice(1).map((line) => {
+          const [nombre, jugados, ganados, empatados, perdidos, puntos, estado] = line.split(',');
+          return {
+            nombre: nombre?.trim() || '',
+            jugados: parseInt(jugados) || 0,
+            ganados: parseInt(ganados) || 0,
+            empatados: parseInt(empatados) || 0,
+            perdidos: parseInt(perdidos) || 0,
+            puntos: parseInt(puntos) || 0,
+            estado: estado?.trim() || '',
+          };
         });
 
-      // Legacy sheet data element (if exists)
-      const sheetDataElement = document.getElementById('sheet-data');
-      if (sheetDataElement) {
-        fetch('')
-          .then((response) => response.text())
-          .then((text) => {
-            const lines = text.trim().split('\n');
-            const rows = lines.slice(1);
-            const html = rows.map((line) => line.split(',').slice(1).join(' - ')).join('<br/>');
-            sheetDataElement.innerHTML = html;
-          })
-          .catch((err) => {
-            console.error(err);
-            sheetDataElement.textContent = 'Failed to load itinerary.';
-          });
+        // Fetch match history
+        const matchesResponse = await fetch(
+          'https://docs.google.com/spreadsheets/d/e/2PACX-1vSDltLEid06nepxJE3_0v7McOqSbhOqkrSJKd5KWBzGWB2DHWouTS1bE5TCSjREZ8xJHAIn_lMhMrwh/pub?gid=546953721&single=true&output=csv',
+        );
+        const matchesText = await matchesResponse.text();
+        const matchesLines = matchesText.trim().split('\n');
+        const matches = matchesLines.slice(1).map((line) => {
+          const parts = line.split(',');
+          return {
+            jugador1Equipo1: parts[0]?.trim() || '',
+            jugador2Equipo1: parts[1]?.trim() || '',
+            jugador3Equipo1: parts[2]?.trim() || '',
+            jugador4Equipo1: parts[3]?.trim() || '',
+            jugador5Equipo1: parts[4]?.trim() || '',
+            jugador1Equipo2: parts[5]?.trim() || '',
+            jugador2Equipo2: parts[6]?.trim() || '',
+            jugador3Equipo2: parts[7]?.trim() || '',
+            jugador4Equipo2: parts[8]?.trim() || '',
+            jugador5Equipo2: parts[9]?.trim() || '',
+            fecha: parts[10]?.trim() || '',
+            ganador: parts[11]?.trim() || '',
+            fechaNumero: parts[12]?.trim() || '',
+          };
+        });
+
+        // Render player stats
+        const playerStatsBody = document.getElementById('playerStatsBody');
+        if (playerStatsBody) {
+          playerStatsBody.innerHTML = playerStats
+            .map(
+              (player, index) => `
+            <tr class="border-b border-gray-800/50 ${index % 2 === 0 ? 'bg-gray-800/40' : 'bg-gray-900/40'} hover:bg-[#3FA6E8]/10 transition-colors">
+              <td class="px-6 py-3 font-semibold text-white">${player.nombre}</td>
+              <td class="px-4 py-3 text-center font-bold text-[#F5C255]">${player.puntos}</td>
+              <td class="px-4 py-3 text-center text-gray-300">${player.jugados}</td>
+              <td class="px-4 py-3 text-center text-[#39DE42]">${player.ganados}</td>
+              <td class="px-4 py-3 text-center text-[#F5C255]">${player.empatados}</td>
+              <td class="px-4 py-3 text-center text-[#FD0100]">${player.perdidos}</td>
+              <td class="px-6 py-3 text-gray-300">${player.estado}</td>
+            </tr>
+          `,
+            )
+            .join('');
+        }
+
+        // Render match history
+        const matchHistory = document.getElementById('matchHistory');
+        if (matchHistory) {
+          matchHistory.innerHTML = matches
+            .map((match) => {
+              const isTeam1Winner = match.ganador === 'E1';
+              const isTeam2Winner = match.ganador === 'E2';
+              const isTie = match.ganador === 'Empate';
+
+              const team1Players = [
+                match.jugador1Equipo1,
+                match.jugador2Equipo1,
+                match.jugador3Equipo1,
+                match.jugador4Equipo1,
+                match.jugador5Equipo1,
+              ].filter((p) => p);
+
+              const team2Players = [
+                match.jugador1Equipo2,
+                match.jugador2Equipo2,
+                match.jugador3Equipo2,
+                match.jugador4Equipo2,
+                match.jugador5Equipo2,
+              ].filter((p) => p);
+
+              const team1Color = isTeam1Winner
+                ? 'bg-[#39DE42] text-white border-2 border-[#39DE42]/50'
+                : isTie
+                  ? 'bg-[#F5C255] text-gray-900 border-2 border-[#F5C255]/50'
+                  : 'bg-[#FD0100] text-white border-2 border-[#FD0100]/50';
+
+              const team2Color = isTeam2Winner
+                ? 'bg-[#39DE42] text-white border-2 border-[#39DE42]/50'
+                : isTie
+                  ? 'bg-[#F5C255] text-gray-900 border-2 border-[#F5C255]/50'
+                  : 'bg-[#FD0100] text-white border-2 border-[#FD0100]/50';
+
+              return `
+            <div class="rounded-xl border-2 border-[#3FA6E8]/30 bg-gradient-to-br from-gray-800/80 to-gray-900/80 p-4 shadow-lg hover:shadow-[#3FA6E8]/20 transition-all">
+              <div class="flex flex-col md:flex-row md:items-stretch md:gap-4">
+                <!-- Team 1 -->
+                <div class="flex-1">
+                  <div class="grid grid-cols-5 gap-2 h-full">
+                    ${team1Players
+                      .map(
+                        (player) => `
+                      <div class="${team1Color} rounded-lg px-2 py-2 flex items-center justify-center text-center text-xs font-bold shadow-md h-12">
+                        <span class="line-clamp-2 leading-tight">${player}</span>
+                      </div>
+                    `,
+                      )
+                      .join('')}
+                  </div>
+                </div>
+
+                <!-- Center info -->
+                <div class="my-3 flex flex-col items-center justify-center md:my-0 md:min-w-[100px] md:border-x-2 md:border-[#3FA6E8]/30 md:px-3">
+                  <div class="text-center text-sm font-bold text-[#3FA6E8]">Fecha ${match.fechaNumero}</div>
+                  <div class="text-center text-xs text-[#F5C255] mt-1">${match.fecha}</div>
+                </div>
+
+                <!-- Team 2 -->
+                <div class="flex-1">
+                  <div class="grid grid-cols-5 gap-2 h-full">
+                    ${team2Players
+                      .map(
+                        (player) => `
+                      <div class="${team2Color} rounded-lg px-2 py-2 flex items-center justify-center text-center text-xs font-bold shadow-md h-12">
+                        <span class="line-clamp-2 leading-tight">${player}</span>
+                      </div>
+                    `,
+                      )
+                      .join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+            })
+            .join('');
+        }
+
+        // Hide loading, show content
+        const loadingElement = document.getElementById('loading');
+        const contentElement = document.getElementById('content');
+        if (loadingElement) {
+          loadingElement.classList.add('hidden');
+        }
+        if (contentElement) {
+          contentElement.classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Error loading data:', error);
+        const loadingElement = document.getElementById('loading');
+        if (loadingElement) {
+          loadingElement.innerHTML = `
+            <p class="text-[#FD0100] font-semibold">Error al cargar los datos. Por favor, recarga la página.</p>
+          `;
+        }
       }
-    });
+    }
+
+    // Load data when page loads
+    loadData();
   </script>
 </Layout>
