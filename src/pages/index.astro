@@ -15,9 +15,12 @@ import logo from '../assets/logo.webp';
         <div class="mb-8 text-center">
           <div class="mx-auto mb-6 flex items-center justify-center">
             <div
-              class="relative h-32 w-32 rounded-full border-4 border-[#3FA6E8] bg-gradient-to-br from-gray-800 to-gray-900 p-3 shadow-xl shadow-[#3FA6E8]/20 md:h-40 md:w-40"
+              class="relative h-32 w-32 rounded-full border-4 border-[#3FA6E8] bg-gradient-to-br from-gray-800 to-gray-900 shadow-xl shadow-[#3FA6E8]/20 md:h-40 md:w-40"
             >
-              <Image src={logo} alt="Mostros Gaming Logo" class="h-full w-full object-contain" />
+              <div class="relative h-full w-full overflow-hidden rounded-full">
+                <Image src={logo} alt="Mostros Gaming Logo" class="h-full w-full object-contain" />
+                <div class="pointer-events-none absolute inset-0 rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.6)]"></div>
+              </div>
             </div>
           </div>
           <h1 class="mb-2 text-2xl font-bold md:text-4xl">
@@ -141,10 +144,11 @@ import logo from '../assets/logo.webp';
             .join('');
         }
 
-        // Render match history
+        // Render match history (sort by fechaNumero descending - most recent first)
         const matchHistory = document.getElementById('matchHistory');
         if (matchHistory) {
           matchHistory.innerHTML = matches
+            .sort((a, b) => parseInt(b.fechaNumero) - parseInt(a.fechaNumero))
             .map((match) => {
               const isTeam1Winner = match.ganador === 'E1';
               const isTeam2Winner = match.ganador === 'E2';
@@ -167,16 +171,16 @@ import logo from '../assets/logo.webp';
               ].filter((p) => p);
 
               const team1Color = isTeam1Winner
-                ? 'bg-[#39DE42] text-white border-2 border-[#39DE42]/50'
+                ? 'bg-[#19611d] text-white border-2 border-[#39DE42]/50'
                 : isTie
                   ? 'bg-[#F5C255] text-gray-900 border-2 border-[#F5C255]/50'
-                  : 'bg-[#FD0100] text-white border-2 border-[#FD0100]/50';
+                  : 'bg-[#7b0000] text-white border-2 border-[#FD0100]/50';
 
               const team2Color = isTeam2Winner
-                ? 'bg-[#39DE42] text-white border-2 border-[#39DE42]/50'
+                ? 'bg-[#19611d] text-white border-2 border-[#39DE42]/50'
                 : isTie
                   ? 'bg-[#F5C255] text-gray-900 border-2 border-[#F5C255]/50'
-                  : 'bg-[#FD0100] text-white border-2 border-[#FD0100]/50';
+                  : 'bg-[#7b0000] text-white border-2 border-[#FD0100]/50';
 
               return `
             <div class="rounded-xl border-2 border-[#3FA6E8]/30 bg-gradient-to-br from-gray-800/80 to-gray-900/80 p-4 shadow-lg hover:shadow-[#3FA6E8]/20 transition-all">
