@@ -80,6 +80,11 @@ import logo from '../assets/logo.webp';
   <script>
     async function loadData() {
       try {
+        // Helper function to format numbers: show one decimal if float, otherwise integer
+        const formatNumber = (num: number): string => {
+          return num % 1 === 0 ? num.toString() : num.toFixed(1);
+        };
+
         // Fetch player stats
         const statsResponse = await fetch(
           'https://docs.google.com/spreadsheets/d/e/2PACX-1vSDltLEid06nepxJE3_0v7McOqSbhOqkrSJKd5KWBzGWB2DHWouTS1bE5TCSjREZ8xJHAIn_lMhMrwh/pub?gid=1418425775&single=true&output=csv',
@@ -90,11 +95,11 @@ import logo from '../assets/logo.webp';
           const [nombre, jugados, ganados, empatados, perdidos, puntos, estado] = line.split(',');
           return {
             nombre: nombre?.trim() || '',
-            jugados: parseInt(jugados) || 0,
-            ganados: parseInt(ganados) || 0,
-            empatados: parseInt(empatados) || 0,
-            perdidos: parseInt(perdidos) || 0,
-            puntos: parseInt(puntos) || 0,
+            jugados: parseFloat(jugados) || 0,
+            ganados: parseFloat(ganados) || 0,
+            empatados: parseFloat(empatados) || 0,
+            perdidos: parseFloat(perdidos) || 0,
+            puntos: parseFloat(puntos) || 0,
             estado: estado?.trim() || '',
           };
         });
@@ -132,11 +137,11 @@ import logo from '../assets/logo.webp';
               (player, index) => `
             <tr class="border-b border-gray-800/50 ${index % 2 === 0 ? 'bg-gray-800/40' : 'bg-gray-900/40'} hover:bg-[#3FA6E8]/10 transition-colors">
               <td class="px-6 py-3 font-semibold text-white">${player.nombre}</td>
-              <td class="px-4 py-3 text-center font-bold text-[#F5C255]">${player.puntos}</td>
-              <td class="px-4 py-3 text-center text-gray-300">${player.jugados}</td>
-              <td class="px-4 py-3 text-center text-[#39DE42]">${player.ganados}</td>
-              <td class="px-4 py-3 text-center text-[#F5C255]">${player.empatados}</td>
-              <td class="px-4 py-3 text-center text-[#FD0100]">${player.perdidos}</td>
+              <td class="px-4 py-3 text-center font-bold text-[#F5C255]">${formatNumber(player.puntos)}</td>
+              <td class="px-4 py-3 text-center text-gray-300">${formatNumber(player.jugados)}</td>
+              <td class="px-4 py-3 text-center text-[#39DE42]">${formatNumber(player.ganados)}</td>
+              <td class="px-4 py-3 text-center text-[#F5C255]">${formatNumber(player.empatados)}</td>
+              <td class="px-4 py-3 text-center text-[#FD0100]">${formatNumber(player.perdidos)}</td>
               <td class="px-6 py-3 text-gray-300">${player.estado}</td>
             </tr>
           `,
