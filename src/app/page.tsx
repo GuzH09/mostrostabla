@@ -82,7 +82,7 @@ async function fetchMatches(): Promise<Match[]> {
 export default async function Home() {
   "use cache";
 
-  cacheLife("weeks");
+  cacheLife("days");
   cacheTag("homepage");
 
   const [playerStats, matches] = await Promise.all([
